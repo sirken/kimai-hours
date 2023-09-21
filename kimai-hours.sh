@@ -2,6 +2,9 @@
 
 script="main.py"
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd "$SCRIPT_DIR"
+
 if [ ! -d "venv" ]; then
   echo "venv does not exist, creating"
   python -m venv venv
