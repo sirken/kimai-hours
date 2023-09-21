@@ -28,10 +28,9 @@ def total_hours_today():
             else:
                 # calculate time from when this entry began until now
                 total_seconds += (datetime.astimezone(datetime.now(tz=None)) - timesheet.begin).total_seconds()
-        hrs_mins_secs = str(timedelta(seconds=total_seconds))
-        colon_split = hrs_mins_secs.split(':')
+        hr_min_sec = str(timedelta(seconds=total_seconds)).split(':')
         # return hours and minutes only
-        return f'{colon_split[0]}:{colon_split[1]}'
+        return f'{hr_min_sec[0]}:{hr_min_sec[1]}'
     except ApiException as e:
         print(f"Exception when calling api_timesheets_get: {e}\n")
 
