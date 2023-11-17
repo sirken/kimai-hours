@@ -21,13 +21,15 @@ def total_hours_today():
         # print(api_response)
         total_seconds = 0
         for timesheet in api_response:
-            # completed entries with final duration (seconds)
-            if timesheet.duration:
-                total_seconds += timesheet.duration
-            # started active entry with 'begin' value only
-            else:
-                # calculate time from when this entry began until now
-                total_seconds += (datetime.astimezone(datetime.now(tz=None)) - timesheet.begin).total_seconds()
+            # narrow to only sheets that began today
+            if timesheet.begin.day == datetime.today().day:
+                # completed entries with final duration (seconds)
+                if timesheet.duration:
+                    total_seconds += timesheet.duration
+                # started active entry with 'begin' value only
+                else:
+                    # calculate time from when this entry began until now
+                    total_seconds += (datetime.astimezone(datetime.now(tz=None)) - timesheet.begin).total_seconds()
         hr_min_sec = str(timedelta(seconds=total_seconds)).split(':')
         # return hours and minutes only
         return f'{hr_min_sec[0]}:{hr_min_sec[1]}'
