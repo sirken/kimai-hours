@@ -22,20 +22,22 @@ def total_hours_today():
         total_seconds = 0
         project_name = ''
         for timesheet in api_response:
-            # completed entries with final duration (seconds)
-            if timesheet.duration:
-                total_seconds += timesheet.duration
-            # started active entry with 'begin' value only
-            else:
-                # calculate time from when this entry began until now
-                total_seconds += (datetime.astimezone(datetime.now(tz=None)) - timesheet.begin).total_seconds()
-                project_id = f'{timesheet.project}'
-                try:
-                    api_project = kimai_python.ProjectApi(kimai_python.ApiClient(configuration))
-                    project = api_project.api_projects_id_get(project_id)
-                    project_name = f'{project.name[:5]}-'
-                except ApiException as e:
-                    print(f"Exception when calling api_projects_id_get: {e}\n")
+            # narrow to only sheets that began today
+            if timesheet.begin.day == datetime.today().day:
+                # completed entries with final duration (seconds)
+                if timesheet.duration:
+                    total_seconds += timesheet.duration
+                # started active entry with 'begin' value only
+                else:
+                    # calculate time from when this entry began until now
+                    total_seconds += (datetime.astimezone(datetime.now(tz=None)) - timesheet.begin).total_seconds()
+                    project_id = f'{timesheet.project}'
+                    try:
+                        api_project = kimai_python.ProjectApi(kimai_python.ApiClient(configuration))
+                        project = api_project.api_projects_id_get(project_id)
+                        project_name = f'{project.name[:5]}-'
+                    except ApiException as e:
+                        print(f"Exception when calling api_projects_id_get: {e}\n")
         hr_min_sec = str(timedelta(seconds=total_seconds)).split(':')
         # return hours and minutes only
         return f'{project_name}{hr_min_sec[0]}:{hr_min_sec[1]}'
