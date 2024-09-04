@@ -5,8 +5,15 @@ script="main.py"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd "$SCRIPT_DIR"
 
+running=0
+if ps -ef | grep Kemai | grep -v "grep" > /dev/null; then
+	running=1
+elif ps -ef | grep kimai2-cmd-linux | grep -v "grep" > /dev/null; then
+	running=1
+fi
+
 # only run if kimai2-cmd-linux is running
-if ps -ef | grep kimai2-cmd-linux | grep -v "grep" > /dev/null; then
+if [ $running -eq 1 ]; then
   # only run Mon (1) to Fri (5)
   if [ $(date +%u) -le 5 ]; then
     if [ ! -d "venv" ]; then
